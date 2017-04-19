@@ -1,0 +1,12 @@
+This is a shared github project between Dr. Manos Chatzopoulos and Richard
+Tuminelo. MESA and SNEC models of SN explosions will be uploaded here. The
+structure of the subfolders should be as follows:
+
+XXMsun:
+	XXMsunNOROTNOML
+	XXMsunNOROTML
+	XXMsunROT03ML
+	XXMsunROT05ML
+	XXMsunROT05MLNOMAG
+	XXMsunROT09ML
+	etc
