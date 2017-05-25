@@ -1,0 +1,297 @@
+
+! inlist_rotation
+
+
+&star_job
+
+!!    BASIC MODEL PARAMETERS -- I/O 
+!------------------------------------------------------------!
+      
+      !create_pre_main_sequence_model = .true.
+      show_log_description_at_start = .false. 
+
+      !save_model_number = 2880
+      !save_model_filename = '20M_precc2.mod'
+      
+      save_model_when_terminate = .true.
+      save_model_filename = '20Mml_precc.mod'
+      
+      !load_saved_model = .true.
+      !saved_model_name = 'pre_bounce.mod'
+      !saved_model_name = '20M_precc.mod'
+      
+      write_profile_when_terminate = .true.
+      filename_for_profile_when_terminate = '20Mml.data'
+
+!!    NUCLEAR REACTION NETWORK 
+!------------------------------------------------------------!
+
+      change_initial_net = .true.      
+      new_net_name = 'basic.net'
+            
+      auto_extend_net = .true.
+      h_he_net = 'basic.net'
+      co_net = 'co_burn.net'
+      adv_net = 'approx21.net'
+
+      eos_file_prefix = 'mesa'
+      kappa_file_prefix = 'gs98'
+      
+
+!!    STELLAR ROTATION PARAMETERS
+!------------------------------------------------------------!
+               
+      change_v_flag = .true.
+      new_v_flag = .true.
+      !new_v_flag = .false.
+                     
+      !change_rotation_flag = .false.
+       change_rotation_flag = .true.
+      !new_rotation_flag = .false.
+       new_rotation_flag = .true.
+      
+       set_initial_omega_div_omega_crit = .true. ! only applies at start of run, not for restarts.
+       new_omega_div_omega_crit = 0.5 ! omega as fraction of current omega_crit at surface
+      
+      !set_initial_surface_rotation_v = .true.
+      !set_surface_rotation_v = .true.
+      !new_surface_rotation_v = 600 ! km/sec    200 for massive
+
+
+!!    CONVERGENCE PARAMETERS BASED ON PHOTOSPHERE OPACITY
+!------------------------------------------------------------!
+
+      !set_tau_factor= .true.
+      !set_to_this_tau_factor= 1.d01! 7.5d04
+      !relax_tau_factor = .true.
+      !relax_to_this_tau_factor = 0.1
+
+
+!!    CREATION OF HIGHER MASS MODELS COMMAND
+!------------------------------------------------------------!
+
+      !relax_mass_scale=.true.
+      !dlgm_per_step=-1
+      !new_mass= 1.    
+
+      pgstar_flag = .true.  
+
+/ ! end of star_job namelist
+
+
+&controls
+
+!!	 BASIC STELLAR PROPERTIES - MASS AND METALLICITY
+!------------------------------------------------------------!
+
+         initial_mass = 15.
+         initial_z = 0.02d0
+
+!!	 MAGNETIC PROPERTIES
+!------------------------------------------------------------!
+
+         !set to 0 for non-magnetic
+	  am_nu_factor = 1
+          D_ST_factor = 0
+          am_nu_ST_factor = 0
+	  am_D_mix_factor =  0.03333333333333333d0
+	  am_gradmu_factor = 0.05d0 !0.05d0 ! 0.05d0
+	 !!use_other_D_mix = .false.
+	 !!use_other_am_mixing = .false.
+	 
+	  D_DSI_factor = 1
+	  D_SH_factor  = 1
+	  D_SSI_factor = 1
+	  D_ES_factor  = 1
+	  D_GSF_factor = 1
+
+!!	 MASS LOSS PARAMETERS
+!------------------------------------------------------------!
+	
+   !cool_wind_RGB_scheme = 'Reimers' !'Reimers'
+   !Reimers_scaling_factor = 0.1 ! 0.1 0.2
+   !cool_wind_AGB_scheme =  'Blocker' !'Blocker'
+   !Blocker_scaling_factor = 0.5 ! 0.5 0.5
+   !RGB_to_AGB_wind_switch = 1d-4 !1d-3
+
+
+   !  only use the cool_wind_scheme
+    !cool_wind_full_on_T = 1d8    !K
+    !cool_wind_full_off_T = 1.1d8 !K
+    !hot_wind_scheme = 'Dutch'
+    
+    !NEW STUFF FOR ML
+     hot_wind_scheme = 'Dutch'
+     hot_wind_full_on_T = 1d0
+     hot_wind_full_off_T = 0d0
+     Dutch_scaling_factor = 0.8
+
+
+         			  	 
+
+!!	 GRID REFINEMENT FOR CONVERGENCE 
+!------------------------------------------------------------!
+         
+         !mesh_delta_coeff = 1.3   ! for massive stars advanced burning
+         !mesh_delta_coeff = 2
+	 !mesh_delta_coeff = 1.0
+	 
+	 max_allowed_nz = 100000
+	 
+	 !max_dq = 1.0e-2
+	 
+	 !xa_function_species(1) = 'h1'
+	 !xa_mesh_delta_coeff(:) = 1
+
+         !max_iter_for_resid_tol1 = 4
+         !max_iter_for_resid_tol2 = 7 
+         !max_iter_for_resid_tol3 = 10
+
+         log_center_density_limit = 12 
+         log_center_temp_limit = 10.3d0 ! max T about 2d10
+        
+         !xa_central_upper_limit_species(1) = 'o16' !'si28' ! isotope name as defined in chem_def
+         !xa_central_upper_limit(1) = 0.25  !1.d-04
+ 
+!!	 OUTPUT DATA PARAMETERS
+!------------------------------------------------------------!
+         
+         log_directory = '15MmlLOGS'
+         photo_directory = 'photos'
+         photo_interval = 100
+         profile_interval = 10
+	 history_interval = 2
+         write_header_frequency = 3
+	 max_num_profile_models = 100
+         
+         max_model_number = 100000
+
+!!	 MIXING AND CONVECTION PARAMETERS 
+!------------------------------------------------------------!                  
+      
+	 !use_Ledoux_criterion = .false.
+	 
+	 !num_cells_for_smooth_gradL_composition_term = 3
+	 
+         !mixing_length_alpha = 2  ! 1.0 for M > 30
+         !alpha_semiconvection = 0.1 ! 4d-2! 1.d-3 ! comment out for Schw
+	 !semiconvection_option = 'Langer_85 mixing; gradT = gradr'
+         !thermohaline_coeff = 1 ! determines efficiency of therm-haline mixing.         
+         !thermohaline_option = 'Kippenhahn'
+
+         !min_overshoot_q = 1d-3 
+         !mdot_omega_power = 0.43
+	 
+	 !!!!New stuff below on T limits for mixing at late stages of massive stellar evol.
+	 
+	 ! high center T limit to avoid negative mass fractions
+         !sig_min_factor_for_high_Tcenter = 10 !0.01
+          ! inactive when >= 1d0
+            ! if Tcenter >= Tcenter_min_for_sig_min_factor_full_on,
+            ! then okay to reduce sig by as much as this factor
+            ! as needed to prevent causing negative abundances
+         !Tcenter_min_for_sig_min_factor_full_on = 3.2d11
+            ! if Tcenter >= this, factor = sig_min_factor_for_neg_abundances
+            ! this should be > Tcenter_max_for_sig_min_factor_full_off.
+         !Tcenter_max_for_sig_min_factor_full_off = 2.8d11
+            ! if Tcenter <= this, factor = 1, so has no effect
+            ! this should be < Tcenter_min_for_sig_min_factor_full_on.
+         ! for T > full_off and < full_on, factor changes linearly with Tcenter
+	 
+         !use_Type2_opacities = .true.	 
+	 !Zbase = 0.02d0 ! must set this in the main inlist
+	 
+	 !delta_Ye_highT_limit = 1d-3
+
+         !okay_to_reduce_gradT_excess = .false. 
+         
+         !   gradT_excess_f1 = 1d-4
+         !   gradT_excess_f2 = 1d-2
+         !   gradT_excess_age_fraction = 0.9d0
+
+         !  gradT_excess_lambda1 = 1.0
+         !   gradT_excess_beta1 = 0.35
+            
+         !   gradT_excess_lambda2 = 0.5
+         !   gradT_excess_beta2 = 0.25
+            
+         !   gradT_excess_dlambda = 0.1
+         !   gradT_excess_dbeta = 0.1
+	    
+	    ! Fake rate factor
+	 !   fe56ec_fake_factor = 5d-3 ! Mutliply by 50 for restart to CC
+
+!!	 MESH PROPERTIES AND OTHER MISCELLANEOUS PARAMETERS
+!------------------------------------------------------------!
+
+	! varcontrol_target = 1d-3
+	 
+        
+        ! xa_scale = 1d-5
+        ! newton_itermin = 2
+
+        ! tol_correction_norm_alt = 1d-3
+        ! tol_max_correction_alt = 1d0
+
+        ! mass_change_full_on_dt = 1d7 ! (seconds)
+        ! mass_change_full_off_dt = 1d6 ! (seconds)
+         
+         min_timestep_limit = 1d-15 ! (seconds)
+         
+
+
+/ ! end of controls namelist
+
+!!  PGSTAR CONTROLS START HERE
+
+&pgstar
+         
+      Grid6_win_flag = .true.
+      Grid6_win_width = 11
+         
+      Grid6_file_flag = .true.
+      Grid6_file_dir = 'png'
+      Grid6_file_prefix = 'grid6_'
+      Grid6_file_interval = 5 ! output when mod(model_number,Grid6_file_interval)==0
+      Grid6_file_width = -1 ! (inches) negative means use same value as for window
+      Grid6_file_aspect_ratio = -1 ! negative means use same value as for window
+
+      Summary_Burn_xaxis_name = 'mass' 
+      Summary_Burn_xaxis_reversed = .false.
+      Summary_Burn_xmin = 0.00 ! -101d0 ! only used if /= -101d0
+      Summary_Burn_xmax = 2.1  ! only used if /= -101d0
+      
+      Abundance_xaxis_name = 'mass' 
+      Abundance_xaxis_reversed = .false.
+      ! power xaxis limits -- to override system default selections
+      Abundance_xmin = 0.00 ! -101d0 ! only used if /= -101d0
+      Abundance_xmax = -101d0 ! only used if /= -101d0
+      Abundance_log_mass_frac_min = -6 ! only used if < 0
+
+      !Profile_Panels4_win_flag = .true.
+      !Profile_Panels4_win_width = 6
+         
+      ! Abundance window -- current model abundance profiles
+      
+         !Abundance_win_flag = .true.
+      
+         Abundance_win_width = 9
+         Abundance_win_aspect_ratio = 0.75 ! aspect_ratio = height/width	 
+
+
+
+	 
+	! 2. History plots
+	 
+         Kipp_win_flag = .true.
+	 Kipp_file_flag = .true.
+	 Kipp_file_dir = 'Kipp_png'
+	 Kipp_file_prefix = 'Kipp_profile_'
+	 !Kipp_file_cnt = 5
+	 Kipp_file_width = -1
+	 Kipp_file_aspect_ratio = -1
+         !TRho_win_flag = .true.
+         !HR_win_flag = .true.
+
+/ ! end of pgstar namelist
+
