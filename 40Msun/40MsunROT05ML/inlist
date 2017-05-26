@@ -24,6 +24,7 @@
       filename_for_profile_when_terminate = '40M_0.5w/40M_0.5w.data'
 
       stop_if_this_file_exists = 'abort.dat'
+      save_pgstar_files_when_terminate = .true. 
 
 !!    NUCLEAR REACTION NETWORK 
 !------------------------------------------------------------!
@@ -43,14 +44,14 @@
 !!    STELLAR ROTATION PARAMETERS
 !------------------------------------------------------------!
                
-      !change_v_flag = .true.
-      !new_v_flag = .true.
+      change_v_flag = .true.
+      new_v_flag = .true.
       !new_v_flag = .false.
                      
       !change_rotation_flag = .false.
-      !change_rotation_flag = .true.
+      change_rotation_flag = .true.
       !new_rotation_flag = .false.
-      !new_rotation_flag = .true.
+      new_rotation_flag = .true.
       
       set_initial_omega_div_omega_crit = .true. ! only applies at start of run, not for restarts.
       new_omega_div_omega_crit = 0.5 ! omega as fraction of current omega_crit at surface
@@ -159,7 +160,7 @@
          log_directory = '40M_0.5w'
          photo_directory = 'photos'
          photo_interval = 100
-         profile_interval = 10
+         profile_interval = 1000
 	 history_interval = 2
          write_header_frequency = 3
 	 max_num_profile_models = 100
@@ -361,12 +362,12 @@
       Grid6_win_flag = .true.
       Grid6_win_width = 11
          
-      Grid6_file_flag = .true.
-      Grid6_file_dir = 'png'
-      Grid6_file_prefix = 'grid6_'
-      Grid6_file_interval = 5 ! output when mod(model_number,Grid6_file_interval)==0
-      Grid6_file_width = -1 ! (inches) negative means use same value as for window
-      Grid6_file_aspect_ratio = -1 ! negative means use same value as for window
+      !Grid6_file_flag = .true.
+      !Grid6_file_dir = 'png'
+      !Grid6_file_prefix = 'grid6_'
+      !Grid6_file_interval = 5 ! output when mod(model_number,Grid6_file_interval)==0
+      !Grid6_file_width = -1 ! (inches) negative means use same value as for window
+      !Grid6_file_aspect_ratio = -1 ! negative means use same value as for window
 
       Summary_Burn_xaxis_name = 'mass' 
       Summary_Burn_xaxis_reversed = .false.
@@ -397,8 +398,8 @@
 	 
          Kipp_win_flag = .true.
 	 Kipp_file_flag = .true.
-         Kipp_file_interval = 500
-	 Kipp_file_dir = '40M_0.5w/Kipp_png'
+         Kipp_file_interval = 100000
+	 Kipp_file_dir = '40M_0.5w'
 	 Kipp_file_prefix = 'Kipp_profile_'
 	 !Kipp_file_cnt = 5
 	 Kipp_file_width = -1
