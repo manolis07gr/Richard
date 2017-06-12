@@ -1,0 +1,430 @@
+
+! inlist_rotation
+
+
+&star_job
+
+!!    BASIC MODEL PARAMETERS -- I/O 
+!------------------------------------------------------------!
+      
+      !create_pre_main_sequence_model = .true.
+      show_log_description_at_start = .false. 
+
+      !save_model_number = 2880
+      !save_model_filename = '20M_precc2.mod'
+      
+      save_model_when_terminate = .true.
+      save_model_filename = '40MnoML/40MnoML.mod'
+      
+      load_saved_model = .true.
+      saved_model_name = '40M.mod'
+      !saved_model_name = '20M_precc.mod'
+      
+      write_profile_when_terminate = .true.
+      filename_for_profile_when_terminate = '40MnoML/40MnoML.data'
+
+      stop_if_this_file_exists = 'abort.dat'
+      save_pgstar_files_when_terminate = .true. 
+
+!!    NUCLEAR REACTION NETWORK 
+!------------------------------------------------------------!
+
+      change_initial_net = .true.      
+      new_net_name = 'basic.net'
+            
+      auto_extend_net = .true.
+      h_he_net = 'basic.net'
+      co_net = 'co_burn.net'
+      adv_net = 'approx21.net'
+
+      eos_file_prefix = 'mesa'
+      kappa_file_prefix = 'gs98'
+      
+
+!!    STELLAR ROTATION PARAMETERS
+!------------------------------------------------------------!
+               
+      change_v_flag = .true.
+      new_v_flag = .true.
+      !new_v_flag = .false.
+                     
+      change_rotation_flag = .false.
+      !change_rotation_flag = .true.
+      new_rotation_flag = .false.
+      !new_rotation_flag = .true.
+      
+      !set_initial_omega_div_omega_crit = .true. ! only applies at start of run, not for restarts.
+      !new_omega_div_omega_crit = 0.9 ! omega as fraction of current omega_crit at surface
+      
+      !set_initial_surface_rotation_v = .true.
+      !set_surface_rotation_v = .true.
+      !new_surface_rotation_v = 600 ! km/sec    200 for massive
+
+
+!!    CONVERGENCE PARAMETERS BASED ON PHOTOSPHERE OPACITY
+!------------------------------------------------------------!
+
+      !set_tau_factor= .true.
+      !set_to_this_tau_factor= 1.d01! 7.5d04
+      !relax_tau_factor = .true.
+      !relax_to_this_tau_factor = 0.1
+
+
+!!    CREATION OF HIGHER MASS MODELS COMMAND
+!------------------------------------------------------------!
+
+      !relax_mass_scale=.true.
+      !dlgm_per_step=-1
+      !new_mass= 1.    
+
+      pgstar_flag = .true.  
+
+/ ! end of star_job namelist
+
+
+&controls
+
+    
+
+!!	 BASIC STELLAR PROPERTIES - MASS AND METALLICITY
+!------------------------------------------------------------!
+
+         initial_mass = 40.
+         initial_z = 0.02d0
+
+!!	 MAGNETIC PROPERTIES
+!------------------------------------------------------------!
+
+         
+         !D_ST_factor = 1  !!set to 0 for non-magnetic
+	 !am_nu_factor = 1
+         !am_nu_ST_factor = 1
+	 !am_D_mix_factor =  0.03333333333333333d0
+	 !am_gradmu_factor = 0.05d0 !0.05d0 ! 0.05d0
+	 !!use_other_D_mix = .false.
+	 !!use_other_am_mixing = .false.
+	 
+	 !D_DSI_factor = 1
+	 !D_SH_factor  = 1
+	 !D_SSI_factor = 1
+	 !D_ES_factor  = 1
+	 !D_GSF_factor = 1
+
+!!	 MASS LOSS PARAMETERS
+!------------------------------------------------------------!
+	
+   !cool_wind_RGB_scheme = 'Reimers' !'Reimers'
+   !Reimers_scaling_factor = 0.5 ! 0.1 0.2 Changed from .1
+   !cool_wind_AGB_scheme =  'Blocker' !'Blocker'
+   !Blocker_scaling_factor = 0.1 ! 0.5 0.5
+   !RGB_to_AGB_wind_switch = 1d-4 !1d-3
+
+
+   !  only use the cool_wind_scheme
+   !cool_wind_full_on_T = 1d8    !K
+   !cool_wind_full_off_T = 1.1d8 !K
+   !hot_wind_scheme = 'Vink'
+
+  !NEW STUFF FOR ML (from 20M_dynamo inlist)
+     !hot_wind_scheme = 'Dutch'
+     !hot_wind_full_on_T = 1d0
+     !hot_wind_full_off_T = 0d0
+     !Dutch_scaling_factor = 0.8
+
+   mass_change = -1.15d-5
+   min_star_mass_for_loss = 15.5
+
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 0.01
+
+
+
+
+
+
+         			  	 
+
+!!	 GRID REFINEMENT FOR CONVERGENCE 
+!------------------------------------------------------------!
+         
+	 
+	 max_allowed_nz = 100000
+	 
+	 !max_dq = 1.0e-2
+	 
+	 !xa_function_species(1) = 'h1'
+	 !xa_mesh_delta_coeff(:) = 1
+
+         !max_iter_for_resid_tol1 = 4
+         !max_iter_for_resid_tol2 = 7 
+         !max_iter_for_resid_tol3 = 10
+
+         log_center_density_limit = 12 
+         log_center_temp_limit = 10.3d0 ! max T about 2d10
+        
+         !xa_central_upper_limit_species(1) = 'o16' !'si28' ! isotope name as defined in chem_def
+         !xa_central_upper_limit(1) = 0.25  !1.d-04
+ 
+!!	 OUTPUT DATA PARAMETERS
+!------------------------------------------------------------!
+         
+         log_directory = '40MnoML'
+         photo_directory = 'photos'
+         photo_interval = 100
+         profile_interval = 1000
+	 history_interval = 2
+         write_header_frequency = 3
+	 max_num_profile_models = 100
+         
+         max_model_number = 100000
+
+!!	 MASSIVE STAR DEFAULT PARAMETERS
+!------------------------------------------------------------!    
+
+          !min_T_for_time_averaged_conv_velocity = 3e9
+         
+         Pextra_factor = -1 ! keep the old form for now
+         
+    
+         ! high center T limit to avoid negative mass fractions
+         sig_min_factor_for_high_Tcenter = 0.01
+          ! inactive when >= 1d0
+            ! if Tcenter >= Tcenter_min_for_sig_min_factor_full_on,
+            ! then okay to reduce sig by as much as this factor
+            ! as needed to prevent causing negative abundances
+         Tcenter_min_for_sig_min_factor_full_on = 3.2d9
+            ! if Tcenter >= this, factor = sig_min_factor_for_neg_abundances
+            ! this should be > Tcenter_max_for_sig_min_factor_full_off.
+         Tcenter_max_for_sig_min_factor_full_off = 2.8d9
+            ! if Tcenter <= this, factor = 1, so has no effect
+            ! this should be < Tcenter_min_for_sig_min_factor_full_on.
+         ! for T > full_off and < full_on, factor changes linearly with Tcenter
+
+         velocity_logT_lower_bound = 8
+         max_dt_yrs_for_velocity_logT_lower_bound = 0.1
+
+         mesh_delta_coeff = 1.5
+         mesh_delta_coeff_for_highT = 2.5
+         logT_max_for_standard_mesh_delta_coeff = 9.0 
+         logT_min_for_highT_mesh_delta_coeff = 9.5 
+         
+         varcontrol_target = 1d-3
+         
+         dX_nuc_drop_limit = 1d-2
+         dX_nuc_drop_limit_at_high_T = 5d-3 ! for center logT > 9.45
+
+         
+         delta_Ye_highT_limit = 1d-3
+
+         okay_to_reduce_gradT_excess = .true. 
+         
+            gradT_excess_f1 = 1d-4
+            gradT_excess_f2 = 1d-2
+            gradT_excess_age_fraction = 0.9d0
+
+            gradT_excess_lambda1 = 1.0
+            gradT_excess_beta1 = 0.35
+            
+            gradT_excess_lambda2 = 0.5
+            gradT_excess_beta2 = 0.25
+            
+            gradT_excess_dlambda = 0.1
+            gradT_excess_dbeta = 0.1
+
+         include_dmu_dt_in_eps_grav = .true.
+
+         use_Type2_opacities = .true.
+         Zbase = 0.02 ! must set this in the main inlist
+
+         xa_scale = 1d-5
+         newton_itermin = 2
+
+         mixing_length_alpha = 1.5
+         MLT_option = 'Henyey'
+
+         use_Ledoux_criterion = .true.
+         alpha_semiconvection = 0.01
+         thermohaline_coeff = 2
+         thermohaline_option = 'Kippenhahn'
+
+         overshoot_f0_above_nonburn_core = 0.0005         
+         overshoot_f0_above_nonburn_shell = 0.0005         
+         overshoot_f0_below_nonburn_shell = 0.0005
+
+         overshoot_f0_above_burn_h_core = 0.0005
+         overshoot_f0_above_burn_h_shell = 0.0005
+         overshoot_f0_below_burn_h_shell = 0.0005
+
+         overshoot_f0_above_burn_he_core = 0.0005
+         overshoot_f0_above_burn_he_shell = 0.0005
+         overshoot_f0_below_burn_he_shell = 0.0005
+
+         overshoot_f0_above_burn_z_core = 0.0005
+         overshoot_f0_above_burn_z_shell = 0.0005
+         overshoot_f0_below_burn_z_shell = 0.0005
+
+
+         overshoot_f_above_nonburn_core = 0.001         
+         overshoot_f_above_nonburn_shell = 0.001         
+         overshoot_f_below_nonburn_shell = 0.001
+
+         overshoot_f_above_burn_h_core = 0.001
+         overshoot_f_above_burn_h_shell = 0.001
+         overshoot_f_below_burn_h_shell = 0.001
+
+         overshoot_f_above_burn_he_core = 0.000
+         overshoot_f_above_burn_he_shell = 0.000
+         overshoot_f_below_burn_he_shell = 0.000
+
+         overshoot_f_above_burn_z_core = 0.000
+         overshoot_f_above_burn_z_shell = 0.000
+         overshoot_f_below_burn_z_shell = 0.000
+
+         !min_T_for_acceleration_limited_conv_velocity = 0
+
+         screening_mode = 'extended'
+         
+         tol_residual_norm1 = 1d-5
+         tol_max_residual1 = 1d-2
+         iter_for_resid_tol2 = 3
+         tol_residual_norm2 = 1d99
+         tol_max_residual2 = 1d99
+         iter_for_resid_tol3 = 12
+         min_timestep_limit = 1d-99 ! (seconds)
+
+         delta_lgL_He_limit = 0.1 ! limit for magnitude of change in lgL_He
+
+         dX_nuc_drop_max_A_limit = 52
+         dX_nuc_drop_min_X_limit = 1d-4
+         dX_nuc_drop_hard_limit = 1d99
+         
+         delta_lgTeff_limit = 0.5  
+         delta_lgL_limit = 0.5
+         delta_lgRho_cntr_limit = 0.02  
+         
+         
+         
+         !delta_lgE_limit = 0.04
+         !delta_lgE_hard_limit = 0.06
+         
+         
+         
+         
+         
+
+!         mesh_dlog_pp_dlogP_extra = 0.4
+!         mesh_dlog_cno_dlogP_extra = 0.4
+!      
+!         mesh_dlog_burn_n_dlogP_extra = 0.4
+!         mesh_dlog_3alf_dlogP_extra = 0.4
+!         mesh_dlog_burn_c_dlogP_extra = 0.4
+
+!			xa_function_species(1) = 'h1'
+!			xa_function_weight(1) = 30
+!			xa_function_param(1) = 1d-3
+
+!			xa_function_species(2) = 'he4'
+!			xa_function_weight(2) = 30
+!			xa_function_param(2) = 1d-3
+
+         T_mix_limit = 0
+
+	 
+	 !num_cells_for_smooth_gradL_composition_term = 3
+	 
+	 !semiconvection_option = 'Langer_85 mixing; gradT = gradr'
+
+         !min_overshoot_q = 1d-3 ! It might be worthwhile to look at the other overshoot controls in massive_defaults
+         !mdoo_omega_power = 0.43
+	 
+	 !!!!New stuff below on T limits for mixing at late stages of massive stellar evol.
+
+         
+	    
+	    ! Fake rate factor
+	 !   fe56ec_fake_factor = 5d-3 ! Mutliply by 50 for restart to CC
+	 
+	 !gradT_excess_min_log_tau_full_on = 3
+	 !gradT_excess_max_log_tau_full_off = 2
+
+
+!!	 MESH PROPERTIES AND OTHER MISCELLANEOUS PARAMETERS
+!------------------------------------------------------------!
+
+        ! tol_correction_norm_alt = 1d-3
+        ! tol_max_correction_alt = 1d0
+
+        ! tol_residual_norm = 1d-5  This and other things are in the massive defaults. 
+        ! It allows for equations to fudge the numbers a little bit, which seems like 
+        ! It could speed up the code.
+
+        ! mass_change_full_on_dt = 1d7 ! (seconds)
+        ! mass_change_full_off_dt = 1d6 ! (seconds)
+
+         
+
+
+/ ! end of controls namelist
+
+!!  PGSTAR CONTROLS START HERE
+
+&pgstar
+         
+      Grid6_win_flag = .true.
+      Grid6_win_width = 11
+         
+      !Grid6_file_flag = .true.
+      !Grid6_file_dir = 'png'
+      !Grid6_file_prefix = 'grid6_'
+      !Grid6_file_interval = 5 ! output when mod(model_number,Grid6_file_interval)==0
+      !Grid6_file_width = -1 ! (inches) negative means use same value as for window
+      !Grid6_file_aspect_ratio = -1 ! negative means use same value as for window
+
+      Summary_Burn_xaxis_name = 'mass' 
+      Summary_Burn_xaxis_reversed = .false.
+      Summary_Burn_xmin = 0.00 ! -101d0 ! only used if /= -101d0
+      Summary_Burn_xmax = 2.1  ! only used if /= -101d0
+      
+      Abundance_xaxis_name = 'mass' 
+      Abundance_xaxis_reversed = .false.
+      ! power xaxis limits -- to override system default selections
+      Abundance_xmin = 0.00 ! -101d0 ! only used if /= -101d0
+      Abundance_xmax = -101d0 ! only used if /= -101d0
+      Abundance_log_mass_frac_min = -6 ! only used if < 0
+
+      !Profile_Panels4_win_flag = .true.
+      !Profile_Panels4_win_width = 6
+         
+      ! Abundance window -- current model abundance profiles
+      
+         !Abundance_win_flag = .true.
+      
+         Abundance_win_width = 9
+         Abundance_win_aspect_ratio = 0.75 ! aspect_ratio = height/width	 
+
+
+
+	 
+	! 2. History plots
+	 
+         Kipp_win_flag = .true.
+	 Kipp_file_flag = .true.
+         Kipp_file_interval = 100000
+	 Kipp_file_dir = '40MnoML'
+	 Kipp_file_prefix = 'Kipp_profile_'
+	 !Kipp_file_cnt = 5
+	 Kipp_file_width = -1
+	 Kipp_file_aspect_ratio = -1
+         !TRho_win_flag = .true.
+         
+        !HR_win_flag = .true.
+
+      Power_win_flag = .true.
+      Power_win_width = 8
+      Summary_Profile_win_flag = .true.
+      Summary_Profile_win_width = 10
+      
+      
+      
+/ ! end of pgstar namelist
+
